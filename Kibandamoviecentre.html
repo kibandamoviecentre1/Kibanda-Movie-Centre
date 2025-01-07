@@ -1,0 +1,352 @@
+<html><head><base href="/" />
+<title>KIBANDA MOVIE CENTRE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background: #0f0f1a;
+    color: white;
+  }
+
+  .header {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300"><rect width="1000" height="300" fill="%231a1a2e"/><circle cx="500" cy="150" r="100" fill="%23e63946" opacity="0.5"/><path d="M0 100 Q 250 200 500 100 T 1000 100" stroke="%23e63946" fill="none" stroke-width="2"/></svg>');
+    background-size: cover;
+    background-position: center;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 200px;
+  }
+<img src="" alt="">
+  .logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #e63946;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .auth-buttons button {
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .signup {
+    background: #e63946;
+    color: white;
+  }
+
+  .login {
+    background: transparent;
+    border: 1px solid #e63946 !important;
+    color: #e63946;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 100;
+  }
+
+  .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1a1a2e;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background: #0f0f1a;
+    color: white;
+  }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .video-card {
+    position: relative;
+    background: #1a1a2e;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 1rem;
+  }
+
+  .video-thumbnail {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .premium-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: gold;
+    color: black;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+  }
+
+  .payment-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 100;
+  }
+
+  .close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    color: #e63946;
+  }
+
+  .mtn-logo {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+  }
+
+  .currency {
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  .recipient-info {
+    margin: 1rem 0;
+    padding: 0.5rem;
+    background: #0f0f1a;
+    border-radius: 5px;
+  }
+
+  .footer {
+    background: #1a1a2e;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+    border-top: 1px solid #333;
+  }
+
+  .footer p {
+    margin: 0.5rem 0;
+    color: #666;
+  }
+
+  .social-links {
+    margin-top: 1rem;
+  }
+
+  .social-links a {
+    color: #e63946;
+    margin: 0 1rem;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">Kibanda Movie Centre</div>
+    <div class="auth-buttons">
+      <button class="login" onclick="showLogin()">Login</button>
+      <button class="signup" onclick="showSignup()">Sign Up</button>
+    </div>
+  </div>
+
+  <div class="video-grid" id="videoGrid">
+    <!-- Videos will be dynamically loaded here -->
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('loginModal')">&times;</span>
+      <h2>Login</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <input type="email" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <input type="password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="signup">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div class="modal" id="signupModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('signupModal')">&times;</span>
+      <h2>Sign Up</h2>
+      <form id="signupForm">
+        <div class="form-group">
+          <input type="text" placeholder="Full Name" required>
+        </div>
+        <div class="form-group">
+          <input type="email" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <input type="password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="signup">Sign Up</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="payment-modal" id="paymentModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('paymentModal')">&times;</span>
+      <h2>MTN Mobile Money Payment</h2>
+      <svg class="mtn-logo" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#ffcc00"/>
+        <text x="50" y="60" text-anchor="middle" fill="#000" font-size="20">MTN</text>
+      </svg>
+      <div class="recipient-info">
+        <p><strong>Recipient:</strong> Jackson</p>
+        <p><strong>Number:</strong> 0787731445</p>
+      </div>
+      <form id="paymentForm">
+        <div class="form-group">
+          <input type="tel" placeholder="Your MTN Mobile Money Number" pattern="[0-9]{10}" required>
+        </div>
+        <div class="form-group">
+          <input type="text" value="5,000 UGX" readonly>
+          <span class="currency">Premium Access Fee</span>
+        </div>
+        <button type="submit" class="signup">Pay Now</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="logo">Kibanda Movie Centre</div>
+    <p>You can Also pay Directly using Mobile Money. Just After paying You Just take A screenshot of Mobile Money message And Send It on Whatsapp</p>
+    <p>Contact: radiohighlife002@gmail.com.com</p>
+    <div class="social-links">
+      <a href="https://facebook.com">Facebook</a>
+      <a href="https://twitter.com">Twitter</a>
+      <a href="https://instagram.com">Instagram</a>
+      <a href="https://wa.me/256787731445">WhatsApp</a>
+    </div>
+    <p>&copy; 2024 Kibanda Movie Centre. All rights reserved.</p>
+  </div>
+
+<script>
+const videos = Array.from({length: 15}, (_, i) => ({
+  id: i + 1,
+  title: `Movie ${i + 1}`,
+  isPremium: i % 3 === 0 || i % 3 === 1,
+  thumbnail: `Movie Thumbnail ${i + 1}`,
+  price: '5,000 UGX'
+}));
+
+function loadVideos() {
+  const videoGrid = document.getElementById('videoGrid');
+  videoGrid.innerHTML = videos.map(video => `
+    <div class="video-card">
+      <div class="video-thumbnail">
+        ${video.thumbnail}
+        ${video.isPremium ? '<span class="premium-badge">PREMIUM</span>' : ''}
+      </div>
+      <div class="video-info">
+        <h3>${video.thumbnail}</h3>
+        ${video.isPremium ? 
+          `<button onclick="showPayment()" class="signup">Subscribe (${video.price})</button>` : 
+          '<button onclick="playVideo(' + video.id + ')" class="login">Watch Now</button>'}
+      </div>
+    </div>
+  `).join('');
+}
+
+function showLogin() {
+  document.getElementById('loginModal').style.display = 'block';
+}
+
+function showSignup() {
+  document.getElementById('signupModal').style.display = 'block';
+}
+
+function showPayment() {
+  document.getElementById('paymentModal').style.display = 'block';
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+}
+
+function playVideo(videoId) {
+  alert(`Playing video ${videoId}`);
+}
+
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  alert('Login successful!');
+  closeModal('loginModal');
+});
+
+document.getElementById('signupForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  alert('Account created successfully!');
+  closeModal('signupModal');
+});
+
+document.getElementById('paymentForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  alert('Please send 5,000 UGX to MTN Mobile Money number 0787731445 (Jackson). After payment, take a screenshot of the confirmation message and send it via WhatsApp for activation.');
+  closeModal('paymentModal');
+});
+
+window.onclick = function(event) {
+  if (event.target.classList.contains('modal') || event.target.classList.contains('payment-modal')) {
+    event.target.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadVideos);
+</script>
+</body></html>
